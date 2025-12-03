@@ -44,22 +44,13 @@ jobs:
             CONTAINER_NAME="medley-rive-droite-webcatalyste"
             IMAGE_NAME="ghcr.io/ryandevgithub/$CONTAINER_NAME:latest"
              echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin 
-             
                docker stop $CONTAINER_NAME || true
                docker rm $CONTAINER_NAME || true
-               
-               # 3. Pull la dernière image (Ceci ne sera plus denied !)
                docker pull $IMAGE_NAME
-               
-               # 4. Run nouveau conteneur
                docker run -d \
                  --name $CONTAINER_NAME \
                  --restart unless-stopped \
                  -p 8086:80 \
                  $IMAGE_NAME
-               
-               # 5. BONNE PRATIQUE : Déconnexion après usage (Sécurité)
                docker logout ghcr.io
-
-               # 6. Vérifie que le conteneur est bien lancé
                docker ps -f name=$CONTAINER_NAME
